@@ -48,4 +48,4 @@ npm run build
 
 - GitHub: [github.com/AllenJohnn](https://github.com/AllenJohnn)
 - LinkedIn: [linkedin.com/in/allenjohnjoy](https://www.linkedin.com/in/allenjohnjoy/)
-- Portfolio: [allenjohn-portfolio.vercel.app](https://allenjohn-portfolio.vercel.app/)
+- Portfolio: [allenjohn-portfolio.vercel.app](https://allenjohnn.vercel.app/)
