@@ -26,8 +26,10 @@ function App() {
   const [activeTab, setActiveTab] = useState<"edit" | "preview" | "ats">("edit");
   const [isExporting, setIsExporting] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
+  const [showImportMenu, setShowImportMenu] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const exportMenuRef = useRef<HTMLDivElement>(null);
+  const importMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(resume));
@@ -38,15 +40,18 @@ function App() {
       if (exportMenuRef.current && !exportMenuRef.current.contains(event.target as Node)) {
         setShowExportMenu(false);
       }
+      if (importMenuRef.current && !importMenuRef.current.contains(event.target as Node)) {
+        setShowImportMenu(false);
+      }
     };
 
-    if (showExportMenu) {
+    if (showExportMenu || showImportMenu) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }
-  }, [showExportMenu]);
+  }, [showExportMenu, showImportMenu]);
 
   const handleExportPDF = async () => {
     if (!previewRef.current) return;
@@ -318,6 +323,8 @@ function App() {
     setShowExportMenu(false);
     if (!previewRef.current) return;
 
+    const resumeJson = JSON.stringify(resume, null, 2);
+
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -338,7 +345,12 @@ function App() {
   </style>
 </head>
 <body>
+  <div id="resume-root">
   ${previewRef.current.innerHTML}
+  </div>
+  <script type="application/json" id="resume-data">
+${resumeJson}
+  </script>
 </body>
 </html>`;
 
@@ -346,89 +358,45 @@ function App() {
     saveAs(blob, `${resume.personalInfo.name || 'resume'}.html`);
   };
 
-  const handleExportTXT = () => {
-    setShowExportMenu(false);
-    let txtContent = '';
+  const handleImportFromHTML = () => {
+    setShowImportMenu(false);
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.html,text/html';
+    input.onchange = (e: any) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
 
-    txtContent += `${resume.personalInfo.name}\n`;
-    txtContent += `${[resume.personalInfo.email, resume.personalInfo.phone, resume.personalInfo.location].filter(Boolean).join(' | ')}\n`;
-    if (resume.personalInfo.portfolioUrl) txtContent += `Portfolio: ${resume.personalInfo.portfolioUrl}\n`;
-    if (resume.personalInfo.linkedin) txtContent += `LinkedIn: ${resume.personalInfo.linkedin}\n`;
-    if (resume.personalInfo.github) txtContent += `GitHub: ${resume.personalInfo.github}\n`;
-    txtContent += '\n';
-
-    if (resume.profile) {
-      txtContent += '='.repeat(60) + '\n';
-      txtContent += 'PROFESSIONAL SUMMARY\n';
-      txtContent += '='.repeat(60) + '\n';
-      txtContent += `${resume.profile}\n\n`;
-    }
-
-    if (resume.workExperience && resume.workExperience.length > 0) {
-      txtContent += '='.repeat(60) + '\n';
-      txtContent += 'WORK EXPERIENCE\n';
-      txtContent += '='.repeat(60) + '\n';
-      resume.workExperience.forEach(job => {
-        txtContent += `\n${job.position} | ${job.company}\n`;
-        txtContent += `${job.period} | ${job.location || ''}\n`;
-        job.points.forEach(point => {
-        });
-      });
-      txtContent += '\n';
-    }
-
-    if (resume.education && resume.education.length > 0) {
-      txtContent += '='.repeat(60) + '\n';
-      txtContent += 'EDUCATION\n';
-      txtContent += '='.repeat(60) + '\n';
-      resume.education.forEach(edu => {
-        txtContent += `\n${edu.degree} | ${edu.institution}\n`;
-        txtContent += `${edu.period}${edu.details ? ' | ' + edu.details : ''}\n`;
-      });
-      txtContent += '\n';
-    }
-
-    if (resume.projects && resume.projects.length > 0) {
-      txtContent += '='.repeat(60) + '\n';
-      txtContent += 'PROJECTS\n';
-      txtContent += '='.repeat(60) + '\n';
-      resume.projects.forEach(project => {
-        txtContent += `\n${project.title}\n`;
-        txtContent += `${project.description}\n`;
-        project.points.forEach(point => {
-          txtContent += `  • ${point}\n`;
-        });
-        if (project.technologies && project.technologies.length > 0) {
-          txtContent += `Technologies: ${project.technologies.join(', ')}\n`;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const text = event.target?.result as string;
+          const match = text.match(/<script[^>]*id=["']resume-data["'][^>]*>([\s\S]*?)<\/script>/);
+          if (!match || !match[1]) {
+            throw new Error('No embedded resume data found');
+          }
+          const json = match[1].trim();
+          const data = JSON.parse(json);
+          setResume(data);
+          alert('Resume imported successfully from HTML file.');
+        } catch (error) {
+          console.error('Failed to import from HTML:', error);
+          alert('Failed to import from HTML. Please use an HTML file exported from this tool.');
         }
-      });
-      txtContent += '\n';
-    }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  };
 
-    if (resume.skills) {
-      txtContent += '='.repeat(60) + '\n';
-      txtContent += 'SKILLS\n';
-      txtContent += '='.repeat(60) + '\n';
-      if (resume.skills.technical && resume.skills.technical.length > 0) {
-        txtContent += `\nTechnical: ${resume.skills.technical.join(', ')}\n`;
-      }
-      if (resume.skills.soft && resume.skills.soft.length > 0) {
-        txtContent += `Soft Skills: ${resume.skills.soft.join(', ')}\n`;
-      }
-      txtContent += '\n';
-    }
+  const handleImportFromPDF = () => {
+    setShowImportMenu(false);
+    alert('Import from PDF is not supported. Please use an HTML file exported from this tool to import your resume.');
+  };
 
-    if (resume.certificates && resume.certificates.length > 0) {
-      txtContent += '='.repeat(60) + '\n';
-      txtContent += 'CERTIFICATIONS\n';
-      txtContent += '='.repeat(60) + '\n';
-      resume.certificates.forEach(cert => {
-        txtContent += `\n${cert.title} | ${cert.issuer} | ${cert.year}\n`;
-      });
-    }
-
-    const blob = new Blob([txtContent], { type: 'text/plain' });
-    saveAs(blob, `${resume.personalInfo.name || 'resume'}.txt`);
+  const handleImportFromDOCX = () => {
+    setShowImportMenu(false);
+    alert('Import from Word (DOCX) is not supported. Please use an HTML file exported from this tool to import your resume.');
   };
 
   const handleReset = () => {
@@ -456,40 +424,6 @@ function App() {
     if (window.confirm("Load example resume?")) {
       setResume(initialResume);
     }
-  };
-
-  const handleExportJSON = () => {
-    const dataStr = JSON.stringify(resume, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${resume.personalInfo.name || 'resume'}_data.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleImportJSON = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'application/json';
-    input.onchange = (e: any) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const data = JSON.parse(event.target?.result as string);
-          setResume(data);
-          alert('Resume imported successfully!');
-        } catch (error) {
-          alert('Failed to import resume. Please check the file format.');
-        }
-      };
-      reader.readAsText(file);
-    };
-    input.click();
   };
 
   return (
@@ -581,34 +515,52 @@ function App() {
                         </svg>
                         Export as HTML
                       </button>
+                      <div className="border-t border-gray-200 my-1"></div>
+                    </div>
+                  )}
+                </div>
+                <div className="relative" ref={importMenuRef}>
+                  <button
+                    onClick={() => setShowImportMenu(!showImportMenu)}
+                    className="px-4 py-2 bg-white text-gray-900 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+                  >
+                    Import Resume
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {showImportMenu && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
                       <button
-                        onClick={handleExportTXT}
+                        onClick={handleImportFromPDF}
+                        className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        Import from PDF
+                      </button>
+                      <button
+                        onClick={handleImportFromDOCX}
                         className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        Export as TXT
+                        Import from Word (DOCX)
                       </button>
-                      <div className="border-t border-gray-200 my-1"></div>
                       <button
-                        onClick={handleExportJSON}
+                        onClick={handleImportFromHTML}
                         className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                         </svg>
-                        Export Data (JSON)
+                        Import from HTML
                       </button>
                     </div>
                   )}
                 </div>
-                <button
-                  onClick={handleImportJSON}
-                  className="px-4 py-2 bg-white text-gray-900 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Import Data
-                </button>
               </div>
             </div>
           </div>

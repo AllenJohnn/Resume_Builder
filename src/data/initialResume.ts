@@ -2,119 +2,84 @@ import { ResumeData } from '../types/resume';
 
 export const initialResume: ResumeData = {
   personalInfo: {
-    name: "Alexander Mitchell",
-    email: "alex.mitchell@email.com",
+    name: "Your Name",
+    email: "your.email@example.com",
     phone: "+1 (555) 123-4567",
-    location: "San Francisco, CA",
-    portfolioUrl: "alexandermitchell.dev",
-    linkedin: "linkedin.com/in/alexandermitchell",
-    github: "github.com/alexmitchell"
+    location: "City, State",
+    portfolioUrl: "yourportfolio.com",
+    linkedin: "linkedin.com/in/yourprofile",
+    github: "github.com/yourprofile"
   },
-  profile: "Results-driven software engineer with 5+ years of experience in full-stack development. Specialized in building scalable web applications using modern frameworks and cloud technologies. Proven track record of delivering high-quality solutions that improve user experience and drive business growth.",
+  profile: "Results-driven software engineer with hands-on experience in full-stack development using modern technologies. Strong foundation in web development, cloud services, and software architecture with a proven track record of delivering high-quality solutions.",
   education: [
     {
       id: "1",
-      period: "2016 - 2020",
+      period: "2020 - 2024",
       degree: "Bachelor of Science in Computer Science",
-      institution: "Stanford University",
-      details: "GPA: 3.8/4.0 | Dean's List | Focus: Software Engineering & AI",
-      gpa: "3.8"
+      institution: "University Name",
+      details: "Relevant coursework and achievements"
     },
     {
       id: "2",
-      period: "2014 - 2016",
-      degree: "Associate Degree in Information Technology",
-      institution: "Community College of San Francisco",
-      details: "Honors Graduate | GPA: 3.9/4.0"
+      period: "2018 - 2020",
+      degree: "High School Diploma",
+      institution: "High School Name",
+      details: ""
     }
   ],
-  workExperience: [
-    {
-      id: "1",
-      period: "2022 - Present",
-      position: "Senior Software Engineer",
-      company: "TechCorp Inc.",
-      location: "San Francisco, CA",
-      points: [
-        "Led development of microservices architecture serving 2M+ daily active users",
-        "Reduced application load time by 40% through code optimization and caching strategies",
-        "Mentored team of 5 junior developers and conducted code reviews",
-        "Implemented CI/CD pipeline reducing deployment time by 60%"
-      ]
-    },
-    {
-      id: "2",
-      period: "2020 - 2022",
-      position: "Full Stack Developer",
-      company: "StartupVenture LLC",
-      location: "Palo Alto, CA",
-      points: [
-        "Built responsive web applications using React, Node.js, and PostgreSQL",
-        "Collaborated with UX team to implement intuitive user interfaces",
-        "Integrated third-party APIs and payment processing systems",
-        "Participated in agile development process and sprint planning"
-      ]
-    }
-  ],
+  workExperience: [],
   projects: [
     {
       id: "1",
-      title: "E-Commerce Analytics Platform",
-      description: "Real-time analytics dashboard for e-commerce businesses with advanced data visualization.",
+      title: "Project Title One",
+      description: "Brief description of your first project",
       points: [
-        "Architected scalable backend using Node.js and MongoDB",
-        "Implemented real-time data processing with WebSocket connections",
-        "Created interactive dashboards using D3.js and Chart.js",
-        "Achieved 99.9% uptime with automated monitoring and alerts"
+        "Key achievement or responsibility one",
+        "Key achievement or responsibility two",
+        "Key achievement or responsibility three"
       ],
-      technologies: ["React", "Node.js", "MongoDB", "WebSocket", "D3.js", "AWS"],
-      link: "github.com/alexmitchell/ecommerce-analytics"
+      technologies: ["Tech1", "Tech2", "Tech3"],
+      link: ""
     },
     {
       id: "2",
-      title: "Task Management System",
-      description: "Collaborative project management tool with real-time updates and team communication features.",
+      title: "Project Title Two",
+      description: "Brief description of your second project",
       points: [
-        "Designed RESTful API with authentication and authorization",
-        "Implemented real-time collaboration using Socket.io",
-        "Built responsive UI with Material-UI components"
+        "Key achievement or responsibility one",
+        "Key achievement or responsibility two"
       ],
-      technologies: ["TypeScript", "Express", "PostgreSQL", "Socket.io", "Docker"],
-      link: "github.com/alexmitchell/task-manager"
+      technologies: ["Tech1", "Tech2"],
+      link: ""
     }
   ],
   skills: {
     technical: [
-      "JavaScript", "TypeScript", "Python", "Java",
-      "React", "Node.js", "Express", "Next.js",
-      "PostgreSQL", "MongoDB", "Redis",
-      "AWS", "Docker", "Kubernetes", "Git"
+      "Programming Languages: Python, Java",
+      "Frontend: React, Angular",
+      "Backend: Node.js",
     ],
     soft: [
-      "Leadership", "Problem Solving", "Communication",
-      "Agile Methodology", "Team Collaboration", "Critical Thinking"
+      "Problem Solving",
+      "Team Collaboration",
+      "Communication",
+      "Adaptability"
     ]
   },
   certificates: [
     {
       id: "1",
-      title: "AWS Certified Solutions Architect",
-      issuer: "Amazon Web Services",
+      title: "Certification Name One",
+      issuer: "Issuing Organization",
       year: "2023",
-      credentialId: "AWS-CSA-2023-12345"
+      credentialId: ""
     },
     {
       id: "2",
-      title: "Professional Scrum Master I",
-      issuer: "Scrum.org",
+      title: "Certification Name Two",
+      issuer: "Issuing Organization",
       year: "2022",
-      credentialId: "PSM-I-987654"
-    },
-    {
-      id: "3",
-      title: "MongoDB Certified Developer",
-      issuer: "MongoDB University",
-      year: "2021"
+      credentialId: ""
     }
   ]
 };
