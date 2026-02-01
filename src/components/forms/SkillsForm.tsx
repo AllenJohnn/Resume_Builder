@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, KeyboardEvent } from 'react';
+
+interface SkillsData {
+  technical: string[];
+  soft: string[];
+  languages?: string[];
+}
 
 interface SkillsFormProps {
-  data: {
-    technical: string[];
-    soft: string[];
-    languages?: string[];
-  };
-  onChange: (data: any) => void;
+  data: SkillsData;
+  onChange: (data: SkillsData) => void;
 }
 
 const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
@@ -14,71 +16,40 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
   const [newSoftSkill, setNewSoftSkill] = useState('');
   const [newLanguage, setNewLanguage] = useState('');
 
-  const addTechSkill = () => {
-    if (newTechSkill.trim()) {
-      onChange({
-        ...data,
-        technical: [...data.technical, newTechSkill.trim()]
-      });
-      setNewTechSkill('');
-    }
-  };
+  const addSkill = (
+    type: 'technical' | 'soft' | 'languages',
+    value: string,
+    setValue: (val: string) => void
+  ) => {
+    const trimmed = value.trim();
+    if (!trimmed) return;
 
-  const addSoftSkill = () => {
-    if (newSoftSkill.trim()) {
-      onChange({
-        ...data,
-        soft: [...data.soft, newSoftSkill.trim()]
-      });
-      setNewSoftSkill('');
-    }
-  };
-
-  const addLanguage = () => {
-    if (newLanguage.trim()) {
-      const languages = data.languages || [];
-      onChange({
-        ...data,
-        languages: [...languages, newLanguage.trim()]
-      });
-      setNewLanguage('');
-    }
-  };
-
-  const removeTechSkill = (index: number) => {
-    const newTechSkills = [...data.technical];
-    newTechSkills.splice(index, 1);
+    const currentList = type === 'languages' ? data.languages || [] : data[type];
     onChange({
       ...data,
-      technical: newTechSkills
+      [type]: [...currentList, trimmed],
+    });
+    setValue('');
+  };
+
+  const removeSkill = (type: 'technical' | 'soft' | 'languages', index: number) => {
+    const currentList = type === 'languages' ? [...(data.languages || [])] : [...data[type]];
+    currentList.splice(index, 1);
+    onChange({
+      ...data,
+      [type]: currentList,
     });
   };
 
-  const removeSoftSkill = (index: number) => {
-    const newSoftSkills = [...data.soft];
-    newSoftSkills.splice(index, 1);
-    onChange({
-      ...data,
-      soft: newSoftSkills
-    });
-  };
-
-  const removeLanguage = (index: number) => {
-    const languages = data.languages || [];
-    const newLanguages = [...languages];
-    newLanguages.splice(index, 1);
-    onChange({
-      ...data,
-      languages: newLanguages
-    });
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent, type: 'tech' | 'soft' | 'language') => {
+  const handleKeyPress = (
+    e: KeyboardEvent<HTMLInputElement>,
+    type: 'technical' | 'soft' | 'languages',
+    value: string,
+    setValue: (val: string) => void
+  ) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (type === 'tech') addTechSkill();
-      else if (type === 'soft') addSoftSkill();
-      else if (type === 'language') addLanguage();
+      addSkill(type, value, setValue);
     }
   };
 
@@ -95,13 +66,14 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
             type="text"
             value={newTechSkill}
             onChange={(e) => setNewTechSkill(e.target.value)}
-            onKeyPress={(e) => handleKeyPress(e, 'tech')}
-            className="flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            onKeyPress={(e) => handleKeyPress(e, 'technical', newTechSkill, setNewTechSkill)}
+            className="flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
             placeholder="e.g., React, Python, SQL"
           />
           <button
-            onClick={addTechSkill}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            type="button"
+            onClick={() => addSkill('technical', newTechSkill, setNewTechSkill)}
+            className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
           >
             Add
           </button>
@@ -111,12 +83,12 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
           {data.technical.map((skill, index) => (
             <div
               key={index}
-              className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded"
+              className="flex items-center bg-gray-100 text-gray-800 px-3 py-1 rounded"
             >
               <span>{skill}</span>
               <button
-                onClick={() => removeTechSkill(index)}
-                className="ml-2 text-blue-600 hover:text-blue-900"
+                onClick={() => removeSkill('technical', index)}
+                className="ml-2 text-gray-500 hover:text-gray-700"
               >
                 ×
               </button>
@@ -128,7 +100,6 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
         </div>
       </div>
 
-
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Soft Skills
@@ -138,13 +109,14 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
             type="text"
             value={newSoftSkill}
             onChange={(e) => setNewSoftSkill(e.target.value)}
-            onKeyPress={(e) => handleKeyPress(e, 'soft')}
-            className="flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            onKeyPress={(e) => handleKeyPress(e, 'soft', newSoftSkill, setNewSoftSkill)}
+            className="flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
             placeholder="e.g., Communication, Teamwork"
           />
           <button
-            onClick={addSoftSkill}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            type="button"
+            onClick={() => addSkill('soft', newSoftSkill, setNewSoftSkill)}
+            className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
           >
             Add
           </button>
@@ -154,12 +126,12 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
           {data.soft.map((skill, index) => (
             <div
               key={index}
-              className="flex items-center bg-green-100 text-green-800 px-3 py-1 rounded"
+              className="flex items-center bg-gray-100 text-gray-800 px-3 py-1 rounded"
             >
               <span>{skill}</span>
               <button
-                onClick={() => removeSoftSkill(index)}
-                className="ml-2 text-green-600 hover:text-green-900"
+                onClick={() => removeSkill('soft', index)}
+                className="ml-2 text-gray-500 hover:text-gray-700"
               >
                 ×
               </button>
@@ -173,20 +145,21 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Languages (Optional)
+          Languages <span className="text-gray-400 font-normal">(Optional)</span>
         </label>
         <div className="flex gap-2 mb-3">
           <input
             type="text"
             value={newLanguage}
             onChange={(e) => setNewLanguage(e.target.value)}
-            onKeyPress={(e) => handleKeyPress(e, 'language')}
-            className="flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            onKeyPress={(e) => handleKeyPress(e, 'languages', newLanguage, setNewLanguage)}
+            className="flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
             placeholder="e.g., English, Spanish"
           />
           <button
-            onClick={addLanguage}
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+            type="button"
+            onClick={() => addSkill('languages', newLanguage, setNewLanguage)}
+            className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
           >
             Add
           </button>
@@ -196,12 +169,12 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
           {(data.languages || []).map((language, index) => (
             <div
               key={index}
-              className="flex items-center bg-purple-100 text-purple-800 px-3 py-1 rounded"
+              className="flex items-center bg-gray-100 text-gray-800 px-3 py-1 rounded"
             >
               <span>{language}</span>
               <button
-                onClick={() => removeLanguage(index)}
-                className="ml-2 text-purple-600 hover:text-purple-900"
+                onClick={() => removeSkill('languages', index)}
+                className="ml-2 text-gray-500 hover:text-gray-700"
               >
                 ×
               </button>

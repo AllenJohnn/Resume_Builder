@@ -13,7 +13,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ data, onChange }) => {
         value={data}
         onChange={(e) => onChange(e.target.value)}
         rows={4}
-        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
         placeholder="Describe your professional background, skills, and career objectives..."
       />
     </div>

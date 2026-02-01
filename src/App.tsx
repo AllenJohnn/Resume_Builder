@@ -4,36 +4,23 @@ import { ResumeData } from "./types/resume";
 import ResumeForm from "./components/ResumeForm";
 import ResumePreview from "./components/ResumePreview";
 import ATSAnalyzer from "./components/ATSAnalyzer";
+import { EMPTY_RESUME } from "./constants";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
 import { saveAs } from "file-saver";
 
-const STORAGE_KEY = 'cv-builder-resume-data';
+type TabType = "edit" | "preview" | "ats";
 
 function App() {
-  const [resume, setResume] = useState<ResumeData>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error('Failed to parse saved resume:', e);
-      }
-    }
-    return initialResume;
-  });
-  const [activeTab, setActiveTab] = useState<"edit" | "preview" | "ats">("edit");
+  const [resume, setResume] = useState<ResumeData>(EMPTY_RESUME);
+  const [activeTab, setActiveTab] = useState<TabType>("edit");
   const [isExporting, setIsExporting] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [showImportMenu, setShowImportMenu] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const exportMenuRef = useRef<HTMLDivElement>(null);
   const importMenuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(resume));
-  }, [resume]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -77,7 +64,7 @@ function App() {
       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
       pdf.save(`${resume.personalInfo.name || 'resume'}.pdf`);
     } catch (error) {
-      console.error('Failed to export PDF:', error);
+      // Error handled via user alert
       alert('Failed to export PDF. Please try again.');
     } finally {
       setIsExporting(false);
@@ -312,7 +299,7 @@ function App() {
       const blob = await Packer.toBlob(doc);
       saveAs(blob, `${resume.personalInfo.name || 'resume'}.docx`);
     } catch (error) {
-      console.error('Failed to export DOCX:', error);
+      // Error handled via user alert
       alert('Failed to export DOCX. Please try again.');
     } finally {
       setIsExporting(false);
@@ -380,7 +367,7 @@ ${resumeJson}
           setResume(data);
           alert('Resume imported successfully from HTML file.');
         } catch (error) {
-          console.error('Failed to import from HTML:', error);
+          // Error handled via user alert
           alert('Failed to import from HTML. Please use an HTML file exported from this tool.');
         }
       };
@@ -401,22 +388,7 @@ ${resumeJson}
 
   const handleReset = () => {
     if (window.confirm("Reset to empty template?")) {
-      setResume({
-        personalInfo: {
-          name: "",
-          email: "",
-          location: "",
-          portfolioUrl: ""
-        },
-        profile: "",
-        education: [],
-        projects: [],
-        skills: {
-          technical: [],
-          soft: []
-        },
-        certificates: []
-      });
+      setResume(EMPTY_RESUME);
     }
   };
 
@@ -607,7 +579,7 @@ ${resumeJson}
             <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-900">Preview</h2>
               <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                Auto-save enabled
+                Auto-save disabled
               </span>
             </div>
             <div ref={previewRef} className="overflow-auto">

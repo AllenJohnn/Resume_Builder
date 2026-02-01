@@ -1,25 +1,41 @@
+/**
+ * Personal information section of the resume
+ */
+export interface PersonalInfo {
+  name: string;
+  email: string;
+  phone?: string;
+  location: string;
+  portfolioUrl: string;
+  linkedin?: string;
+  github?: string;
+}
+
+/**
+ * Skills categorized by type
+ */
+export interface Skills {
+  technical: string[];
+  soft: string[];
+  languages?: string[];
+}
+
+/**
+ * Complete resume data structure
+ */
 export interface ResumeData {
-  personalInfo: {
-    name: string;
-    email: string;
-    phone?: string;
-    location: string;
-    portfolioUrl: string;
-    linkedin?: string;
-    github?: string;
-  };
+  personalInfo: PersonalInfo;
   profile: string;
   education: EducationItem[];
   projects: ProjectItem[];
   workExperience?: WorkExperienceItem[];
-  skills: {
-    technical: string[];
-    soft: string[];
-    languages?: string[];
-  };
+  skills: Skills;
   certificates: CertificateItem[];
 }
 
+/**
+ * Education entry in the resume
+ */
 export interface EducationItem {
   id: string;
   period: string;
@@ -29,6 +45,9 @@ export interface EducationItem {
   gpa?: string;
 }
 
+/**
+ * Project entry in the resume
+ */
 export interface ProjectItem {
   id: string;
   title: string;
@@ -38,6 +57,9 @@ export interface ProjectItem {
   link?: string;
 }
 
+/**
+ * Work experience entry in the resume
+ */
 export interface WorkExperienceItem {
   id: string;
   period: string;
@@ -47,6 +69,9 @@ export interface WorkExperienceItem {
   points: string[];
 }
 
+/**
+ * Certificate/certification entry in the resume
+ */
 export interface CertificateItem {
   id: string;
   title: string;

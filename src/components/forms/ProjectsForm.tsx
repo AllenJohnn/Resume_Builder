@@ -75,12 +75,12 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow border">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-800">💼 Projects</h3>
+        <h3 className="text-lg font-semibold text-gray-800">Projects</h3>
         <button
           onClick={addProject}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
         >
-          + Add Project
+          + Add
         </button>
       </div>
 
@@ -91,7 +91,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
               <h4 className="font-medium text-gray-700">Project #{index + 1}</h4>
               <button
                 onClick={() => removeProject(project.id)}
-                className="text-red-600 hover:text-red-800"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Remove
               </button>
@@ -104,7 +104,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
                   type="text"
                   value={project.title}
                   onChange={(e) => updateProject(project.id, 'title', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="e.g., E-commerce Website"
                   required
                 />
@@ -116,7 +116,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
                   value={project.description}
                   onChange={(e) => updateProject(project.id, 'description', e.target.value)}
                   rows={2}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="Brief description of the project..."
                 />
               </div>
@@ -126,7 +126,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
                   <label className="block text-sm font-medium text-gray-700">Key Achievements/Points</label>
                   <button
                     onClick={() => addPoint(project.id)}
-                    className="text-sm text-blue-600 hover:text-blue-800"
+                    className="text-sm text-gray-700 hover:text-gray-900"
                   >
                     + Add Point
                   </button>
@@ -138,7 +138,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
                       type="text"
                       value={point}
                       onChange={(e) => updatePoint(project.id, pointIndex, e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                       placeholder="e.g., Implemented responsive design using React"
                     />
                   ))}
@@ -150,7 +150,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
                   <label className="block text-sm font-medium text-gray-700">Technologies Used</label>
                   <button
                     onClick={() => addTechnology(project.id)}
-                    className="text-sm text-blue-600 hover:text-blue-800"
+                    className="text-sm text-gray-700 hover:text-gray-900"
                   >
                     + Add Technology
                   </button>
@@ -162,7 +162,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
                       type="text"
                       value={tech}
                       onChange={(e) => updateTechnology(project.id, techIndex, e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                       placeholder="e.g., React, Node.js, MongoDB"
                     />
                   ))}

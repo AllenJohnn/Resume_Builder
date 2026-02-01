@@ -33,12 +33,12 @@ const EducationForm: React.FC<EducationFormProps> = ({ data, onChange }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow border">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-800">🎓 Education</h3>
+        <h3 className="text-lg font-semibold text-gray-800">Education</h3>
         <button
           onClick={addEducation}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
         >
-          + Add Education
+          + Add
         </button>
       </div>
 
@@ -49,7 +49,7 @@ const EducationForm: React.FC<EducationFormProps> = ({ data, onChange }) => {
               <h4 className="font-medium text-gray-700">Education #{index + 1}</h4>
               <button
                 onClick={() => removeEducation(edu.id)}
-                className="text-red-600 hover:text-red-800"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Remove
               </button>
@@ -62,7 +62,7 @@ const EducationForm: React.FC<EducationFormProps> = ({ data, onChange }) => {
                   type="text"
                   value={edu.period}
                   onChange={(e) => updateEducation(edu.id, 'period', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="2020 – 2024"
                   required
                 />
@@ -74,7 +74,7 @@ const EducationForm: React.FC<EducationFormProps> = ({ data, onChange }) => {
                   type="text"
                   value={edu.degree}
                   onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="Bachelor of Computer Applications"
                   required
                 />
@@ -86,7 +86,7 @@ const EducationForm: React.FC<EducationFormProps> = ({ data, onChange }) => {
                   type="text"
                   value={edu.institution}
                   onChange={(e) => updateEducation(edu.id, 'institution', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="University Name"
                   required
                 />
@@ -98,7 +98,7 @@ const EducationForm: React.FC<EducationFormProps> = ({ data, onChange }) => {
                   value={edu.details || ''}
                   onChange={(e) => updateEducation(edu.id, 'details', e.target.value)}
                   rows={2}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="Relevant coursework, achievements, GPA..."
                 />
               </div>

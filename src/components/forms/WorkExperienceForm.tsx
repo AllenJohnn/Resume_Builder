@@ -62,9 +62,9 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
         <h3 className="text-lg font-semibold text-gray-800">Work Experience</h3>
         <button
           onClick={addItem}
-          className="px-3 py-1 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600"
+          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
         >
-          + Add Experience
+          + Add
         </button>
       </div>
 
@@ -78,7 +78,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
                 <h4 className="font-medium text-gray-700">Experience Entry</h4>
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="text-red-600 hover:text-red-800 text-sm"
+                  className="text-gray-600 hover:text-gray-900 text-sm"
                 >
                   Remove
                 </button>
@@ -94,7 +94,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
                     value={item.position}
                     onChange={(e) => updateItem(item.id, 'position', e.target.value)}
                     placeholder="Software Engineer"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   />
                 </div>
 
@@ -107,7 +107,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
                     value={item.company}
                     onChange={(e) => updateItem(item.id, 'company', e.target.value)}
                     placeholder="Tech Corp Inc."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   />
                 </div>
 
@@ -120,7 +120,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
                     value={item.period}
                     onChange={(e) => updateItem(item.id, 'period', e.target.value)}
                     placeholder="Jan 2022 - Present"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   />
                 </div>
 
@@ -133,7 +133,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
                     value={item.location || ''}
                     onChange={(e) => updateItem(item.id, 'location', e.target.value)}
                     placeholder="San Francisco, CA"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -145,7 +145,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
                   </label>
                   <button
                     onClick={() => addPoint(item.id)}
-                    className="text-blue-600 hover:text-blue-800 text-sm"
+                    className="text-gray-700 hover:text-gray-900 text-sm"
                   >
                     + Add Point
                   </button>
@@ -159,12 +159,12 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
                         value={point}
                         onChange={(e) => updatePoint(item.id, idx, e.target.value)}
                         placeholder="Describe your achievements and responsibilities..."
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                       />
                       {item.points.length > 1 && (
                         <button
                           onClick={() => removePoint(item.id, idx)}
-                          className="px-3 py-2 text-red-600 hover:text-red-800"
+                          className="px-3 py-2 text-gray-600 hover:text-gray-900"
                         >
                           ×
                         </button>

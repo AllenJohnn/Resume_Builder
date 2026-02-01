@@ -35,9 +35,9 @@ const CertificatesForm: React.FC<CertificatesFormProps> = ({ data, onChange }) =
         <h3 className="text-lg font-semibold text-gray-800">Certifications</h3>
         <button
           onClick={addCertificate}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
         >
-          + Add Certificate
+          + Add
         </button>
       </div>
 
@@ -48,7 +48,7 @@ const CertificatesForm: React.FC<CertificatesFormProps> = ({ data, onChange }) =
               <h4 className="font-medium text-gray-700">Certificate #{index + 1}</h4>
               <button
                 onClick={() => removeCertificate(cert.id)}
-                className="text-red-600 hover:text-red-800"
+                className="text-gray-600 hover:text-gray-900"
               >
                 Remove
               </button>
@@ -61,7 +61,7 @@ const CertificatesForm: React.FC<CertificatesFormProps> = ({ data, onChange }) =
                   type="text"
                   value={cert.title}
                   onChange={(e) => updateCertificate(cert.id, 'title', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="e.g., AWS Certified Solutions Architect"
                   required
                 />
@@ -73,7 +73,7 @@ const CertificatesForm: React.FC<CertificatesFormProps> = ({ data, onChange }) =
                   type="text"
                   value={cert.issuer}
                   onChange={(e) => updateCertificate(cert.id, 'issuer', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="e.g., Amazon Web Services"
                   required
                 />
@@ -85,7 +85,7 @@ const CertificatesForm: React.FC<CertificatesFormProps> = ({ data, onChange }) =
                   type="text"
                   value={cert.year}
                   onChange={(e) => updateCertificate(cert.id, 'year', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="e.g., 2023"
                   required
                 />
@@ -97,7 +97,7 @@ const CertificatesForm: React.FC<CertificatesFormProps> = ({ data, onChange }) =
                   type="text"
                   value={cert.credentialId || ''}
                   onChange={(e) => updateCertificate(cert.id, 'credentialId', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="e.g., ABC123XYZ"
                 />
               </div>
@@ -108,7 +108,7 @@ const CertificatesForm: React.FC<CertificatesFormProps> = ({ data, onChange }) =
                   type="url"
                   value={cert.link || ''}
                   onChange={(e) => updateCertificate(cert.id, 'link', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="https://credential.net/verify/abc123"
                 />
               </div>
