@@ -73,7 +73,7 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
           <button
             type="button"
             onClick={() => addSkill('technical', newTechSkill, setNewTechSkill)}
-            className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+            className="btn-ui-primary"
           >
             Add
           </button>
@@ -88,7 +88,7 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
               <span>{skill}</span>
               <button
                 onClick={() => removeSkill('technical', index)}
-                className="ml-2 text-gray-500 hover:text-gray-700"
+                className="ml-2 text-gray-600 hover:text-black"
               >
                 ×
               </button>
@@ -116,7 +116,7 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
           <button
             type="button"
             onClick={() => addSkill('soft', newSoftSkill, setNewSoftSkill)}
-            className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+            className="btn-ui-primary"
           >
             Add
           </button>
@@ -131,7 +131,7 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
               <span>{skill}</span>
               <button
                 onClick={() => removeSkill('soft', index)}
-                className="ml-2 text-gray-500 hover:text-gray-700"
+                className="ml-2 text-gray-600 hover:text-black"
               >
                 ×
               </button>
@@ -159,7 +159,7 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
           <button
             type="button"
             onClick={() => addSkill('languages', newLanguage, setNewLanguage)}
-            className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+            className="btn-ui-primary"
           >
             Add
           </button>
@@ -174,7 +174,7 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
               <span>{language}</span>
               <button
                 onClick={() => removeSkill('languages', index)}
-                className="ml-2 text-gray-500 hover:text-gray-700"
+                className="ml-2 text-gray-600 hover:text-black"
               >
                 ×
               </button>

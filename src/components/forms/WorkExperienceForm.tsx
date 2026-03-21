@@ -62,7 +62,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
         <h3 className="text-lg font-semibold text-gray-800">Work Experience</h3>
         <button
           onClick={addItem}
-          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+          className="btn-ui-primary"
         >
           + Add
         </button>
@@ -78,7 +78,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
                 <h4 className="font-medium text-gray-700">Experience Entry</h4>
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="text-gray-600 hover:text-gray-900 text-sm"
+                  className="btn-ui-link"
                 >
                   Remove
                 </button>
@@ -145,7 +145,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
                   </label>
                   <button
                     onClick={() => addPoint(item.id)}
-                    className="text-gray-700 hover:text-gray-900 text-sm"
+                    className="btn-ui-link"
                   >
                     + Add Point
                   </button>
@@ -164,7 +164,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ data, onChange 
                       {item.points.length > 1 && (
                         <button
                           onClick={() => removePoint(item.id, idx)}
-                          className="px-3 py-2 text-gray-600 hover:text-gray-900"
+                          className="btn-ui-icon"
                         >
                           ×
                         </button>

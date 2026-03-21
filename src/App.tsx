@@ -5,10 +5,12 @@ import ResumeForm from "./components/ResumeForm";
 import ResumePreview from "./components/ResumePreview";
 import ATSAnalyzer from "./components/ATSAnalyzer";
 import { EMPTY_RESUME } from "./constants";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
-import { saveAs } from "file-saver";
+import {
+  exportToPDF,
+  exportToDOCX,
+  exportToHTML,
+  importFromHTML,
+} from "./utils/exportUtils";
 
 type TabType = "edit" | "preview" | "ats";
 
@@ -40,29 +42,14 @@ function App() {
     }
   }, [showExportMenu, showImportMenu]);
 
+
   const handleExportPDF = async () => {
     if (!previewRef.current) return;
-    
+
+    setIsExporting(true);
     setShowExportMenu(false);
     try {
-      const canvas = await html2canvas(previewRef.current, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-      
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-      pdf.save(`${resume.personalInfo.name || 'resume'}.pdf`);
+      await exportToPDF(previewRef.current, resume.personalInfo.name || 'resume');
     } catch (error) {
       // Error handled via user alert
       alert('Failed to export PDF. Please try again.');
@@ -75,229 +62,7 @@ function App() {
     setIsExporting(true);
     setShowExportMenu(false);
     try {
-      const sections: any[] = [];
-
-      sections.push(
-        new Paragraph({
-          text: resume.personalInfo.name,
-          heading: HeadingLevel.HEADING_1,
-          alignment: AlignmentType.CENTER,
-          spacing: { after: 100 }
-        })
-      );
-
-      const contactInfo = [
-        resume.personalInfo.email,
-        resume.personalInfo.phone,
-        resume.personalInfo.location,
-        resume.personalInfo.portfolioUrl,
-        resume.personalInfo.linkedin,
-        resume.personalInfo.github
-      ].filter(Boolean).join(' | ');
-
-      sections.push(
-        new Paragraph({
-          text: contactInfo,
-          alignment: AlignmentType.CENTER,
-          spacing: { after: 200 }
-        })
-      );
-
-      if (resume.profile) {
-        sections.push(
-          new Paragraph({
-            text: "PROFESSIONAL SUMMARY",
-            heading: HeadingLevel.HEADING_2,
-            spacing: { before: 200, after: 100 }
-          })
-        );
-        sections.push(
-          new Paragraph({
-            text: resume.profile,
-            spacing: { after: 200 }
-          })
-        );
-      }
-
-      if (resume.workExperience && resume.workExperience.length > 0) {
-        sections.push(
-          new Paragraph({
-            text: "WORK EXPERIENCE",
-            heading: HeadingLevel.HEADING_2,
-            spacing: { before: 200, after: 100 }
-          })
-        );
-
-        resume.workExperience.forEach(job => {
-          sections.push(
-            new Paragraph({
-              children: [
-                new TextRun({ text: job.position, bold: true }),
-                new TextRun({ text: ` | ${job.company}` })
-              ],
-              spacing: { before: 100 }
-            })
-          );
-          sections.push(
-            new Paragraph({
-              children: [
-                new TextRun({ text: `${job.period} | ${job.location || ''}`, italics: true })
-              ],
-              spacing: { after: 50 }
-            })
-          );
-
-          job.points.forEach(point => {
-            sections.push(
-              new Paragraph({
-                text: `• ${point}`,
-                spacing: { after: 50 }
-              })
-            );
-          });
-        });
-      }
-
-      if (resume.education && resume.education.length > 0) {
-        sections.push(
-          new Paragraph({
-            text: "EDUCATION",
-            heading: HeadingLevel.HEADING_2,
-            spacing: { before: 200, after: 100 }
-          })
-        );
-
-        resume.education.forEach(edu => {
-          sections.push(
-            new Paragraph({
-              children: [
-                new TextRun({ text: edu.degree, bold: true }),
-                new TextRun({ text: ` | ${edu.institution}` })
-              ],
-              spacing: { before: 100 }
-            })
-          );
-          sections.push(
-            new Paragraph({
-              text: `${edu.period}${edu.details ? ' | ' + edu.details : ''}`,
-              spacing: { after: 100 }
-            })
-          );
-        });
-      }
-
-      if (resume.projects && resume.projects.length > 0) {
-        sections.push(
-          new Paragraph({
-            text: "PROJECTS",
-            heading: HeadingLevel.HEADING_2,
-            spacing: { before: 200, after: 100 }
-          })
-        );
-
-        resume.projects.forEach(project => {
-          sections.push(
-            new Paragraph({
-              children: [
-                new TextRun({ text: project.title, bold: true })
-              ],
-              spacing: { before: 100 }
-            })
-          );
-          sections.push(
-            new Paragraph({
-              children: [
-                new TextRun({ text: project.description, italics: true })
-              ],
-              spacing: { after: 50 }
-            })
-          );
-
-          project.points.forEach(point => {
-            sections.push(
-              new Paragraph({
-                text: `• ${point}`,
-                spacing: { after: 50 }
-              })
-            );
-          });
-
-          if (project.technologies && project.technologies.length > 0) {
-            sections.push(
-              new Paragraph({
-                text: `Technologies: ${project.technologies.join(', ')}`,
-                spacing: { after: 100 }
-              })
-            );
-          }
-        });
-      }
-
-      if (resume.skills) {
-        sections.push(
-          new Paragraph({
-            text: "SKILLS",
-            heading: HeadingLevel.HEADING_2,
-            spacing: { before: 200, after: 100 }
-          })
-        );
-
-        if (resume.skills.technical && resume.skills.technical.length > 0) {
-          sections.push(
-            new Paragraph({
-              children: [
-                new TextRun({ text: "Technical: ", bold: true }),
-                new TextRun({ text: resume.skills.technical.join(', ') })
-              ],
-              spacing: { after: 100 }
-            })
-          );
-        }
-
-        if (resume.skills.soft && resume.skills.soft.length > 0) {
-          sections.push(
-            new Paragraph({
-              children: [
-                new TextRun({ text: "Soft Skills: ", bold: true }),
-                new TextRun({ text: resume.skills.soft.join(', ') })
-              ],
-              spacing: { after: 100 }
-            })
-          );
-        }
-      }
-
-      if (resume.certificates && resume.certificates.length > 0) {
-        sections.push(
-          new Paragraph({
-            text: "CERTIFICATIONS",
-            heading: HeadingLevel.HEADING_2,
-            spacing: { before: 200, after: 100 }
-          })
-        );
-
-        resume.certificates.forEach(cert => {
-          sections.push(
-            new Paragraph({
-              children: [
-                new TextRun({ text: cert.title, bold: true }),
-                new TextRun({ text: ` | ${cert.issuer} | ${cert.year}` })
-              ],
-              spacing: { after: 100 }
-            })
-          );
-        });
-      }
-
-      const doc = new Document({
-        sections: [{
-          properties: {},
-          children: sections
-        }]
-      });
-
-      const blob = await Packer.toBlob(doc);
-      saveAs(blob, `${resume.personalInfo.name || 'resume'}.docx`);
+      await exportToDOCX(resume);
     } catch (error) {
       // Error handled via user alert
       alert('Failed to export DOCX. Please try again.');
@@ -310,39 +75,7 @@ function App() {
     setShowExportMenu(false);
     if (!previewRef.current) return;
 
-    const resumeJson = JSON.stringify(resume, null, 2);
-
-    const htmlContent = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${resume.personalInfo.name} - Resume</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; }
-    h1 { text-align: center; margin-bottom: 10px; }
-    .contact { text-align: center; margin-bottom: 30px; color: #666; }
-    h2 { border-bottom: 2px solid #333; padding-bottom: 5px; margin-top: 30px; }
-    .section { margin-bottom: 20px; }
-    .item { margin-bottom: 15px; }
-    .title { font-weight: bold; }
-    .subtitle { color: #666; font-style: italic; }
-    ul { margin: 5px 0; }
-  </style>
-</head>
-<body>
-  <div id="resume-root">
-  ${previewRef.current.innerHTML}
-  </div>
-  <script type="application/json" id="resume-data">
-${resumeJson}
-  </script>
-</body>
-</html>`;
-
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    saveAs(blob, `${resume.personalInfo.name || 'resume'}.html`);
+    exportToHTML(resume, previewRef.current.innerHTML);
   };
 
   const handleImportFromHTML = () => {
@@ -350,28 +83,18 @@ ${resumeJson}
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.html,text/html';
-    input.onchange = (e: any) => {
+    input.onchange = async (e: any) => {
       const file = e.target.files?.[0];
       if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const text = event.target?.result as string;
-          const match = text.match(/<script[^>]*id=["']resume-data["'][^>]*>([\s\S]*?)<\/script>/);
-          if (!match || !match[1]) {
-            throw new Error('No embedded resume data found');
-          }
-          const json = match[1].trim();
-          const data = JSON.parse(json);
-          setResume(data);
-          alert('Resume imported successfully from HTML file.');
-        } catch (error) {
-          // Error handled via user alert
-          alert('Failed to import from HTML. Please use an HTML file exported from this tool.');
-        }
-      };
-      reader.readAsText(file);
+      try {
+        const data = await importFromHTML(file);
+        setResume(data);
+        alert('Resume imported successfully from HTML file.');
+      } catch (error) {
+        // Error handled via user alert
+        alert('Failed to import from HTML. Please use an HTML file exported from this tool.');
+      }
     };
     input.click();
   };
@@ -412,33 +135,33 @@ ${resumeJson}
             </div>
             
             <div className="flex flex-wrap justify-center lg:justify-end gap-2 w-full lg:w-auto">
-              <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
+              <div className="flex gap-1 rounded-sm border border-gray-300 bg-white p-1 shadow-sm">
                 <button
                   onClick={() => setActiveTab("edit")}
-                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  className={`btn-ui-tab ${
                     activeTab === "edit" 
-                      ? "bg-white text-gray-900 shadow-sm" 
-                      : "text-gray-600 hover:text-gray-900"
+                      ? "border-gray-900 bg-gray-900 text-white" 
+                      : "border-transparent text-gray-700 hover:border-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => setActiveTab("preview")}
-                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  className={`btn-ui-tab ${
                     activeTab === "preview" 
-                      ? "bg-white text-gray-900 shadow-sm" 
-                      : "text-gray-600 hover:text-gray-900"
+                      ? "border-gray-900 bg-gray-900 text-white" 
+                      : "border-transparent text-gray-700 hover:border-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   Preview
                 </button>
                 <button
                   onClick={() => setActiveTab("ats")}
-                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  className={`btn-ui-tab ${
                     activeTab === "ats" 
-                      ? "bg-white text-gray-900 shadow-sm" 
-                      : "text-gray-600 hover:text-gray-900"
+                      ? "border-gray-900 bg-gray-900 text-white" 
+                      : "border-transparent text-gray-700 hover:border-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   ATS Score
@@ -450,7 +173,7 @@ ${resumeJson}
                   <button
                     onClick={() => setShowExportMenu(!showExportMenu)}
                     disabled={isExporting}
-                    className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                    className="btn-ui-primary gap-2 disabled:cursor-not-allowed disabled:border-gray-400 disabled:bg-gray-400"
                   >
                     {isExporting ? 'Exporting...' : 'Export Resume'}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -494,7 +217,7 @@ ${resumeJson}
                 <div className="relative" ref={importMenuRef}>
                   <button
                     onClick={() => setShowImportMenu(!showImportMenu)}
-                    className="px-4 py-2 bg-white text-gray-900 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+                    className="btn-ui-secondary gap-2"
                   >
                     Import Resume
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -549,13 +272,13 @@ ${resumeJson}
                   <div className="flex gap-2">
                     <button
                       onClick={handleReset}
-                      className="px-3 py-1.5 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                      className="btn-ui-secondary px-3 py-1.5"
                     >
                       Clear All
                     </button>
                     <button
                       onClick={handleLoadExample}
-                      className="px-3 py-1.5 text-sm text-gray-900 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                      className="btn-ui-primary px-3 py-1.5"
                     >
                       Load Sample
                     </button>
@@ -578,9 +301,6 @@ ${resumeJson}
           <div className="bg-white border border-gray-200 rounded-lg p-6 order-1 xl:order-2">
             <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-900">Preview</h2>
-              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                Auto-save disabled
-              </span>
             </div>
             <div ref={previewRef} className="overflow-auto">
               <ResumePreview resume={resume} />
@@ -617,7 +337,7 @@ ${resumeJson}
                 </svg>
               </a>
               <a
-                href="https://allenjohn-portfolio.vercel.app/"
+                href="https://allenjohnnportfolio.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-600 hover:text-gray-900 transition-colors"

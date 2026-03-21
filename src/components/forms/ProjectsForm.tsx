@@ -78,7 +78,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
         <h3 className="text-lg font-semibold text-gray-800">Projects</h3>
         <button
           onClick={addProject}
-          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+          className="btn-ui-primary"
         >
           + Add
         </button>
@@ -91,7 +91,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
               <h4 className="font-medium text-gray-700">Project #{index + 1}</h4>
               <button
                 onClick={() => removeProject(project.id)}
-                className="text-gray-600 hover:text-gray-900"
+                className="btn-ui-link"
               >
                 Remove
               </button>
@@ -126,7 +126,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
                   <label className="block text-sm font-medium text-gray-700">Key Achievements/Points</label>
                   <button
                     onClick={() => addPoint(project.id)}
-                    className="text-sm text-gray-700 hover:text-gray-900"
+                    className="btn-ui-link"
                   >
                     + Add Point
                   </button>
@@ -150,7 +150,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
                   <label className="block text-sm font-medium text-gray-700">Technologies Used</label>
                   <button
                     onClick={() => addTechnology(project.id)}
-                    className="text-sm text-gray-700 hover:text-gray-900"
+                    className="btn-ui-link"
                   >
                     + Add Technology
                   </button>

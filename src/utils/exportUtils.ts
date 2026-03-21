@@ -43,15 +43,53 @@ export const exportToPDF = async (
  * Export resume as DOCX
  */
 export const exportToDOCX = async (resume: ResumeData): Promise<void> => {
+  const hasText = (value?: string) => !!value && value.trim().length > 0;
+  const cleanText = (value?: string) => (value || '').trim();
+
+  const education = (resume.education || []).filter(
+    (item) =>
+      hasText(item.period) ||
+      hasText(item.degree) ||
+      hasText(item.institution) ||
+      hasText(item.details) ||
+      hasText(item.gpa)
+  );
+
+  const workExperience = (resume.workExperience || []).filter(
+    (item) =>
+      hasText(item.period) ||
+      hasText(item.position) ||
+      hasText(item.company) ||
+      hasText(item.location) ||
+      item.points.some((point) => hasText(point))
+  );
+
+  const projects = (resume.projects || []).filter(
+    (item) =>
+      hasText(item.title) ||
+      hasText(item.description) ||
+      item.points.some((point) => hasText(point)) ||
+      item.technologies.some((tech) => hasText(tech)) ||
+      hasText(item.link)
+  );
+
+  const certificates = (resume.certificates || []).filter(
+    (item) => hasText(item.title) || hasText(item.issuer) || hasText(item.year)
+  );
+
+  const technicalSkills = (resume.skills?.technical || []).filter(hasText);
+  const softSkills = (resume.skills?.soft || []).filter(hasText);
+  const languages = (resume.skills?.languages || []).filter(hasText);
+
   const sections: Paragraph[] = [];
 
   // Header
   sections.push(
     new Paragraph({
-      text: resume.personalInfo.name,
+      text: cleanText(resume.personalInfo.name),
       heading: HeadingLevel.HEADING_1,
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 100 },
+      alignment: AlignmentType.LEFT,
+      spacing: { after: 120 },
     })
   );
 
@@ -64,55 +102,60 @@ export const exportToDOCX = async (resume: ResumeData): Promise<void> => {
     resume.personalInfo.linkedin,
     resume.personalInfo.github,
   ]
-    .filter(Boolean)
+    .filter((value) => hasText(value))
     .join(' | ');
 
-  sections.push(
-    new Paragraph({
-      text: contactInfo,
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 200 },
-    })
-  );
-
-  // Profile
-  if (resume.profile) {
+  if (hasText(contactInfo)) {
     sections.push(
       new Paragraph({
-        text: 'PROFESSIONAL SUMMARY',
+        text: contactInfo,
+        alignment: AlignmentType.LEFT,
+        spacing: { after: 220 },
+      })
+    );
+  }
+
+  // Profile
+  if (hasText(resume.profile)) {
+    sections.push(
+      new Paragraph({
+        text: 'PROFILE',
         heading: HeadingLevel.HEADING_2,
-        spacing: { before: 200, after: 100 },
+        thematicBreak: true,
+        spacing: { before: 150, after: 90 },
       }),
       new Paragraph({
-        text: resume.profile,
-        spacing: { after: 200 },
+        text: cleanText(resume.profile),
+        spacing: { after: 180 },
       })
     );
   }
 
   // Work Experience
-  if (resume.workExperience?.length) {
+  if (workExperience.length) {
     sections.push(
       new Paragraph({
         text: 'WORK EXPERIENCE',
         heading: HeadingLevel.HEADING_2,
-        spacing: { before: 200, after: 100 },
+        thematicBreak: true,
+        spacing: { before: 150, after: 90 },
       })
     );
 
-    resume.workExperience.forEach((job) => {
+    workExperience.forEach((job) => {
       sections.push(
         new Paragraph({
           children: [
-            new TextRun({ text: job.position, bold: true }),
-            new TextRun({ text: ` | ${job.company}` }),
+            new TextRun({ text: cleanText(job.period), bold: false }),
+            new TextRun({ text: '   ' }),
+            new TextRun({ text: cleanText(job.position), bold: true }),
           ],
-          spacing: { before: 100 },
+          spacing: { before: 100, after: 30 },
         }),
         new Paragraph({
           children: [
             new TextRun({
-              text: `${job.period} | ${job.location || ''}`,
+              text: `${cleanText(job.company)}${hasText(job.company) && hasText(job.location) ? ' | ' : ''}${cleanText(job.location)}`,
               italics: true,
             }),
           ],
@@ -120,79 +163,104 @@ export const exportToDOCX = async (resume: ResumeData): Promise<void> => {
         })
       );
 
-      job.points.forEach((point) => {
+      job.points.filter(hasText).forEach((point) => {
         sections.push(
           new Paragraph({
-            text: `• ${point}`,
+            text: `• ${cleanText(point)}`,
             spacing: { after: 50 },
           })
         );
       });
+
+      sections.push(new Paragraph({ text: '', spacing: { after: 80 } }));
     });
   }
 
   // Education
-  if (resume.education?.length) {
+  if (education.length) {
     sections.push(
       new Paragraph({
         text: 'EDUCATION',
         heading: HeadingLevel.HEADING_2,
-        spacing: { before: 200, after: 100 },
+        thematicBreak: true,
+        spacing: { before: 150, after: 90 },
       })
     );
 
-    resume.education.forEach((edu) => {
+    education.forEach((edu) => {
       sections.push(
         new Paragraph({
           children: [
-            new TextRun({ text: edu.degree, bold: true }),
-            new TextRun({ text: ` | ${edu.institution}` }),
+            new TextRun({ text: cleanText(edu.period), bold: false }),
+            new TextRun({ text: '   ' }),
+            new TextRun({ text: cleanText(edu.degree).toUpperCase(), bold: true }),
           ],
-          spacing: { before: 100 },
+          spacing: { before: 100, after: 30 },
         }),
         new Paragraph({
-          text: `${edu.period}${edu.details ? ' | ' + edu.details : ''}`,
-          spacing: { after: 100 },
+          children: [new TextRun({ text: cleanText(edu.institution), italics: true })],
+          spacing: { after: 30 },
         })
       );
+
+      if (hasText(edu.details)) {
+        sections.push(
+          new Paragraph({
+            text: cleanText(edu.details),
+            spacing: { after: 50 },
+          })
+        );
+      }
+
+      if (hasText(edu.gpa)) {
+        sections.push(
+          new Paragraph({
+            text: `GPA: ${cleanText(edu.gpa)}`,
+            spacing: { after: 100 },
+          })
+        );
+      }
+      sections.push(new Paragraph({ text: '', spacing: { after: 40 } }));
     });
   }
 
   // Projects
-  if (resume.projects?.length) {
+  if (projects.length) {
     sections.push(
       new Paragraph({
         text: 'PROJECTS',
         heading: HeadingLevel.HEADING_2,
-        spacing: { before: 200, after: 100 },
+        thematicBreak: true,
+        spacing: { before: 150, after: 90 },
       })
     );
 
-    resume.projects.forEach((project) => {
+    projects.forEach((project) => {
       sections.push(
         new Paragraph({
-          children: [new TextRun({ text: project.title, bold: true })],
-          spacing: { before: 100 },
-        }),
-        new Paragraph({
-          children: [new TextRun({ text: project.description, italics: true })],
-          spacing: { after: 50 },
+          children: [
+            new TextRun({ text: cleanText(project.title), bold: true }),
+            hasText(project.description)
+              ? new TextRun({ text: ` - ${cleanText(project.description)}` })
+              : new TextRun({ text: '' }),
+          ],
+          spacing: { before: 100, after: 40 },
         })
       );
 
-      project.points.forEach((point) => {
+      project.points.filter(hasText).forEach((point) => {
         sections.push(
           new Paragraph({
-            text: `• ${point}`,
+            text: `• ${cleanText(point)}`,
             spacing: { after: 50 },
           })
         );
       });
 
-      if (project.technologies?.length) {
+      if (project.technologies.filter(hasText).length) {
         sections.push(
           new Paragraph({
-            text: `Technologies: ${project.technologies.join(', ')}`,
+            text: `Tech: ${project.technologies.filter(hasText).join(', ')}`,
             spacing: { after: 100 },
           })
         );
@@ -201,56 +269,72 @@ export const exportToDOCX = async (resume: ResumeData): Promise<void> => {
   }
 
   // Skills
-  if (resume.skills) {
+  if (technicalSkills.length || softSkills.length || languages.length) {
     sections.push(
       new Paragraph({
         text: 'SKILLS',
         heading: HeadingLevel.HEADING_2,
-        spacing: { before: 200, after: 100 },
+        thematicBreak: true,
+        spacing: { before: 150, after: 90 },
       })
     );
 
-    if (resume.skills.technical?.length) {
+    if (technicalSkills.length) {
       sections.push(
         new Paragraph({
           children: [
-            new TextRun({ text: 'Technical: ', bold: true }),
-            new TextRun({ text: resume.skills.technical.join(', ') }),
+            new TextRun({ text: 'Technical Skills: ', bold: true }),
+            new TextRun({ text: technicalSkills.join(', ') }),
           ],
-          spacing: { after: 100 },
+          spacing: { after: 70 },
         })
       );
     }
 
-    if (resume.skills.soft?.length) {
+    if (softSkills.length) {
       sections.push(
         new Paragraph({
           children: [
             new TextRun({ text: 'Soft Skills: ', bold: true }),
-            new TextRun({ text: resume.skills.soft.join(', ') }),
+            new TextRun({ text: softSkills.join(', ') }),
           ],
-          spacing: { after: 100 },
+          spacing: { after: 70 },
+        })
+      );
+    }
+
+    if (languages.length) {
+      sections.push(
+        new Paragraph({
+          children: [
+            new TextRun({ text: 'Languages: ', bold: true }),
+            new TextRun({ text: languages.join(', ') }),
+          ],
+          spacing: { after: 70 },
         })
       );
     }
   }
 
   // Certificates
-  if (resume.certificates?.length) {
+  if (certificates.length) {
     sections.push(
       new Paragraph({
         text: 'CERTIFICATIONS',
         heading: HeadingLevel.HEADING_2,
-        spacing: { before: 200, after: 100 },
+        thematicBreak: true,
+        spacing: { before: 150, after: 90 },
       })
     );
 
-    resume.certificates.forEach((cert) => {
+    certificates.forEach((cert) => {
       sections.push(
         new Paragraph({
           children: [
-            new TextRun({ text: cert.title, bold: true }),
-            new TextRun({ text: ` | ${cert.issuer} | ${cert.year}` }),
+            new TextRun({ text: cleanText(cert.title), bold: true }),
+            new TextRun({
+              text: `${hasText(cert.issuer) ? ` | ${cleanText(cert.issuer)}` : ''}${hasText(cert.year) ? ` (${cleanText(cert.year)})` : ''}`,
+            }),
           ],
           spacing: { after: 100 },
         })

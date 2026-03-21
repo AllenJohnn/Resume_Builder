@@ -35,7 +35,7 @@ const CertificatesForm: React.FC<CertificatesFormProps> = ({ data, onChange }) =
         <h3 className="text-lg font-semibold text-gray-800">Certifications</h3>
         <button
           onClick={addCertificate}
-          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+          className="btn-ui-primary"
         >
           + Add
         </button>
@@ -48,7 +48,7 @@ const CertificatesForm: React.FC<CertificatesFormProps> = ({ data, onChange }) =
               <h4 className="font-medium text-gray-700">Certificate #{index + 1}</h4>
               <button
                 onClick={() => removeCertificate(cert.id)}
-                className="text-gray-600 hover:text-gray-900"
+                className="btn-ui-link"
               >
                 Remove
               </button>

@@ -22,7 +22,7 @@ export const initialResume: ResumeData = {
     {
       id: "2",
       period: "2018 - 2020",
-      degree: "High School Diploma",
+      degree: "High School",
       institution: "High School Name",
       details: ""
     }
