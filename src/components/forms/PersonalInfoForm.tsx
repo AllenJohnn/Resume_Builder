@@ -6,7 +6,7 @@ interface PersonalInfoFormProps {
     email: string;
     phone?: string;
     location: string;
-    portfolioUrl: string;
+    portfolioUrl?: string;
     linkedin?: string;
     github?: string;
   };
@@ -74,10 +74,10 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ data, onChange }) =
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">Portfolio URL</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">Portfolio URL (Optional)</label>
           <input
             type="url"
-            value={data.portfolioUrl}
+            value={data.portfolioUrl || ''}
             onChange={(e) => handleChange('portfolioUrl', e.target.value)}
             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-transparent"
             placeholder="alexandermitchell.dev"
@@ -85,7 +85,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ data, onChange }) =
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">LinkedIn</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">LinkedIn (Optional)</label>
           <input
             type="url"
             value={data.linkedin || ''}
@@ -96,7 +96,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ data, onChange }) =
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">GitHub</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">GitHub (Optional)</label>
           <input
             type="url"
             value={data.github || ''}

@@ -6,7 +6,7 @@ export interface PersonalInfo {
   email: string;
   phone?: string;
   location: string;
-  portfolioUrl: string;
+  portfolioUrl?: string;
   linkedin?: string;
   github?: string;
 }
