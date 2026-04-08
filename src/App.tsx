@@ -122,46 +122,48 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div className="min-h-screen bg-[linear-gradient(180deg,#f8fafc_0%,#eef2f7_100%)] text-gray-900 selection:bg-gray-900 selection:text-white">
+      <header className="sticky top-0 z-50 border-b border-gray-200/80 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/80">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row justify-between items-center py-4 gap-4">
+          <div className="flex flex-col items-center justify-between gap-4 py-4 lg:flex-row">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gray-900 rounded"></div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-900 text-white shadow-sm">
+                <span className="text-sm font-bold">RB</span>
+              </div>
               <div>
                 <h1 className="text-lg font-semibold text-gray-900 tracking-tight">Resume Builder</h1>
-                <p className="text-xs text-gray-500">Professional & ATS-Optimized</p>
+                <p className="text-xs text-gray-500">Professional, ATS-friendly, export-ready</p>
               </div>
             </div>
             
-            <div className="flex flex-wrap justify-center lg:justify-end gap-2 w-full lg:w-auto">
-              <div className="flex gap-1 rounded-sm border border-gray-300 bg-white p-1 shadow-sm">
+            <div className="flex w-full flex-wrap justify-center gap-2 lg:w-auto lg:justify-end">
+              <div className="flex gap-1 rounded-full border border-gray-200 bg-gray-100 p-1 shadow-sm">
                 <button
                   onClick={() => setActiveTab("edit")}
-                  className={`btn-ui-tab ${
+                  className={`btn-ui-tab rounded-full px-4 py-2 ${
                     activeTab === "edit" 
-                      ? "border-gray-900 bg-gray-900 text-white" 
-                      : "border-transparent text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+                      ? "border-gray-900 bg-gray-900 text-white shadow-sm" 
+                      : "border-transparent text-gray-600 hover:bg-white hover:text-gray-900"
                   }`}
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => setActiveTab("preview")}
-                  className={`btn-ui-tab ${
+                  className={`btn-ui-tab rounded-full px-4 py-2 ${
                     activeTab === "preview" 
-                      ? "border-gray-900 bg-gray-900 text-white" 
-                      : "border-transparent text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+                      ? "border-gray-900 bg-gray-900 text-white shadow-sm" 
+                      : "border-transparent text-gray-600 hover:bg-white hover:text-gray-900"
                   }`}
                 >
                   Preview
                 </button>
                 <button
                   onClick={() => setActiveTab("ats")}
-                  className={`btn-ui-tab ${
+                  className={`btn-ui-tab rounded-full px-4 py-2 ${
                     activeTab === "ats" 
-                      ? "border-gray-900 bg-gray-900 text-white" 
-                      : "border-transparent text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+                      ? "border-gray-900 bg-gray-900 text-white shadow-sm" 
+                      : "border-transparent text-gray-600 hover:bg-white hover:text-gray-900"
                   }`}
                 >
                   ATS Score
@@ -173,7 +175,7 @@ function App() {
                   <button
                     onClick={() => setShowExportMenu(!showExportMenu)}
                     disabled={isExporting}
-                    className="btn-ui-primary gap-2 disabled:cursor-not-allowed disabled:border-gray-400 disabled:bg-gray-400"
+                    className="btn-ui-primary gap-2 rounded-full px-4 py-2.5 disabled:cursor-not-allowed disabled:border-gray-400 disabled:bg-gray-400"
                   >
                     {isExporting ? 'Exporting...' : 'Export Resume'}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,7 +184,7 @@ function App() {
                   </button>
                   
                   {showExportMenu && !isExporting && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                    <div className="absolute right-0 mt-2 w-48 rounded-xl border border-gray-200 bg-white py-1 shadow-xl shadow-gray-200/70 z-50">
                       <button
                         onClick={handleExportPDF}
                         className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
@@ -217,7 +219,7 @@ function App() {
                 <div className="relative" ref={importMenuRef}>
                   <button
                     onClick={() => setShowImportMenu(!showImportMenu)}
-                    className="btn-ui-secondary gap-2"
+                    className="btn-ui-secondary gap-2 rounded-full px-4 py-2.5"
                   >
                     Import Resume
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -225,7 +227,7 @@ function App() {
                     </svg>
                   </button>
                   {showImportMenu && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                    <div className="absolute right-0 mt-2 w-56 rounded-xl border border-gray-200 bg-white py-1 shadow-xl shadow-gray-200/70 z-50">
                       <button
                         onClick={handleImportFromPDF}
                         className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
@@ -263,22 +265,22 @@ function App() {
       </header>
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <div className="bg-white border border-gray-200 rounded-lg p-6 order-2 xl:order-1">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <div className="order-2 rounded-2xl border border-gray-200/80 bg-white p-6 shadow-sm shadow-gray-200/60 xl:order-1">
             {activeTab === "edit" ? (
               <>
-                <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+                <div className="mb-6 flex items-center justify-between border-b border-gray-200 pb-4">
                   <h2 className="text-lg font-semibold text-gray-900">Edit Resume</h2>
                   <div className="flex gap-2">
                     <button
                       onClick={handleReset}
-                      className="btn-ui-secondary px-3 py-1.5"
+                      className="btn-ui-secondary rounded-full px-3 py-1.5"
                     >
                       Clear All
                     </button>
                     <button
                       onClick={handleLoadExample}
-                      className="btn-ui-primary px-3 py-1.5"
+                      className="btn-ui-primary rounded-full px-3 py-1.5"
                     >
                       Load Sample
                     </button>
@@ -288,7 +290,7 @@ function App() {
               </>
             ) : activeTab === "ats" ? (
               <>
-                <h2 className="text-lg font-semibold text-gray-900 mb-6 pb-4 border-b border-gray-200">ATS Compatibility Analysis</h2>
+                <h2 className="mb-6 border-b border-gray-200 pb-4 text-lg font-semibold text-gray-900">ATS Compatibility Analysis</h2>
                 <ATSAnalyzer resume={resume} />
               </>
             ) : (
@@ -298,18 +300,18 @@ function App() {
             )}
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-6 order-1 xl:order-2">
-            <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+          <div className="order-1 rounded-2xl border border-gray-200/80 bg-white p-6 shadow-sm shadow-gray-200/60 xl:sticky xl:top-24 xl:order-2 xl:self-start">
+            <div className="mb-6 flex items-center justify-between border-b border-gray-200 pb-4">
               <h2 className="text-lg font-semibold text-gray-900">Preview</h2>
             </div>
-            <div ref={previewRef} className="overflow-auto">
+            <div ref={previewRef} className="overflow-auto rounded-xl bg-gray-50/60 p-2">
               <ResumePreview resume={resume} />
             </div>
           </div>
         </div>
       </main>
 
-      <footer className="bg-white border-t border-gray-200 mt-12">
+      <footer className="mt-12 border-t border-gray-200 bg-white/80 backdrop-blur">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <p className="text-sm text-gray-900 font-medium mb-3">Resume Builder</p>
@@ -349,7 +351,7 @@ function App() {
               </a>
             </div>
             <p className="text-xs text-gray-500">
-              © 2026 AllenJohn. All rights reserved.
+              © AllenJohn.
             </p>
           </div>
         </div>

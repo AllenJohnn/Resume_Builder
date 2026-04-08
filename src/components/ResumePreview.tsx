@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ResumeData } from '../types/resume';
 
 interface SvgIconProps {
@@ -58,57 +58,90 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
   resume,
   density = 'compact',
 }) => {
-  const hasText = (value?: string) => !!value && value.trim().length > 0;
+  const {
+    hasText,
+    cleanText,
+    hasName,
+    hasContact,
+    hasHeader,
+    filteredProjects,
+    filteredEducation,
+    filteredCertificates,
+    filteredWorkExperience,
+    filteredTechnicalSkills,
+    filteredSoftSkills,
+    filteredLanguageSkills,
+  } = useMemo(() => {
+    const hasTextFn = (value?: string) => !!value && value.trim().length > 0;
+    const cleanTextFn = (value?: string) => (value || '').trim();
 
-  const cleanText = (value?: string) => (value || '').trim();
+    const filteredProjectsFn = resume.projects.filter((project) =>
+      hasTextFn(project.title) ||
+      hasTextFn(project.description) ||
+      project.points.some((point) => hasTextFn(point)) ||
+      project.technologies.some((tech) => hasTextFn(tech)) ||
+      hasTextFn(project.link)
+    );
 
-  const hasName = hasText(resume.personalInfo.name);
-  const hasContact = [
-    resume.personalInfo.email,
-    resume.personalInfo.phone,
-    resume.personalInfo.location,
-    resume.personalInfo.portfolioUrl,
-    resume.personalInfo.linkedin,
-    resume.personalInfo.github
-  ].some(hasText);
+    const filteredEducationFn = resume.education.filter((edu) =>
+      hasTextFn(edu.period) ||
+      hasTextFn(edu.degree) ||
+      hasTextFn(edu.institution) ||
+      hasTextFn(edu.details) ||
+      hasTextFn(edu.gpa)
+    );
 
-  const hasHeader = hasName || hasContact;
+    const filteredCertificatesFn = resume.certificates.filter((cert) =>
+      hasTextFn(cert.title) ||
+      hasTextFn(cert.issuer) ||
+      hasTextFn(cert.year) ||
+      hasTextFn(cert.credentialId) ||
+      hasTextFn(cert.link)
+    );
 
-  const filteredProjects = resume.projects.filter((project) =>
-    hasText(project.title) ||
-    hasText(project.description) ||
-    project.points.some((point) => hasText(point)) ||
-    project.technologies.some((tech) => hasText(tech)) ||
-    hasText(project.link)
-  );
+    const filteredWorkExperienceFn = (resume.workExperience || []).filter((work) =>
+      hasTextFn(work.position) ||
+      hasTextFn(work.company) ||
+      hasTextFn(work.period) ||
+      hasTextFn(work.location) ||
+      work.points.some((point) => hasTextFn(point))
+    );
 
-  const filteredEducation = resume.education.filter((edu) =>
-    hasText(edu.period) ||
-    hasText(edu.degree) ||
-    hasText(edu.institution) ||
-    hasText(edu.details) ||
-    hasText(edu.gpa)
-  );
+    const filteredTechnicalSkillsFn = (resume.skills.technical || []).filter(hasTextFn);
+    const filteredSoftSkillsFn = (resume.skills.soft || []).filter(hasTextFn);
+    const filteredLanguageSkillsFn = (resume.skills.languages || []).filter(hasTextFn);
 
-  const filteredCertificates = resume.certificates.filter((cert) =>
-    hasText(cert.title) ||
-    hasText(cert.issuer) ||
-    hasText(cert.year) ||
-    hasText(cert.credentialId) ||
-    hasText(cert.link)
-  );
-
-  const filteredWorkExperience = (resume.workExperience || []).filter((work) =>
-    hasText(work.position) ||
-    hasText(work.company) ||
-    hasText(work.period) ||
-    hasText(work.location) ||
-    work.points.some((point) => hasText(point))
-  );
-
-  const filteredTechnicalSkills = (resume.skills.technical || []).filter(hasText);
-  const filteredSoftSkills = (resume.skills.soft || []).filter(hasText);
-  const filteredLanguageSkills = (resume.skills.languages || []).filter(hasText);
+    return {
+      hasText: hasTextFn,
+      cleanText: cleanTextFn,
+      hasName: hasTextFn(resume.personalInfo.name),
+      hasContact: [
+        resume.personalInfo.email,
+        resume.personalInfo.phone,
+        resume.personalInfo.location,
+        resume.personalInfo.portfolioUrl,
+        resume.personalInfo.linkedin,
+        resume.personalInfo.github,
+      ].some(hasTextFn),
+      hasHeader:
+        hasTextFn(resume.personalInfo.name) ||
+        [
+          resume.personalInfo.email,
+          resume.personalInfo.phone,
+          resume.personalInfo.location,
+          resume.personalInfo.portfolioUrl,
+          resume.personalInfo.linkedin,
+          resume.personalInfo.github,
+        ].some(hasTextFn),
+      filteredProjects: filteredProjectsFn,
+      filteredEducation: filteredEducationFn,
+      filteredCertificates: filteredCertificatesFn,
+      filteredWorkExperience: filteredWorkExperienceFn,
+      filteredTechnicalSkills: filteredTechnicalSkillsFn,
+      filteredSoftSkills: filteredSoftSkillsFn,
+      filteredLanguageSkills: filteredLanguageSkillsFn,
+    };
+  }, [resume]);
 
   const hasSkills =
     filteredTechnicalSkills.length > 0 ||

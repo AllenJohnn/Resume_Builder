@@ -1,16 +1,6 @@
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import {
-  Document,
-  Packer,
-  Paragraph,
-  TextRun,
-  HeadingLevel,
-  AlignmentType,
-} from 'docx';
-import { saveAs } from 'file-saver';
+import type { Paragraph as DocxParagraph } from 'docx';
 import { ResumeData } from '../types/resume';
-import { PDF_CONFIG } from '../constants';
+import { saveAs } from 'file-saver';
 import { sanitizeFilename } from './helpers';
 
 /**
@@ -20,6 +10,12 @@ export const exportToPDF = async (
   element: HTMLElement,
   filename: string
 ): Promise<void> => {
+  const [{ default: html2canvas }, { default: jsPDF }, { PDF_CONFIG }] = await Promise.all([
+    import('html2canvas'),
+    import('jspdf'),
+    import('../constants'),
+  ]);
+
   const canvas = await html2canvas(element, {
     scale: PDF_CONFIG.scale,
     useCORS: true,
@@ -43,6 +39,15 @@ export const exportToPDF = async (
  * Export resume as DOCX
  */
 export const exportToDOCX = async (resume: ResumeData): Promise<void> => {
+  const {
+    Document,
+    Packer,
+    Paragraph,
+    TextRun,
+    HeadingLevel,
+    AlignmentType,
+  } = await import('docx');
+
   const hasText = (value?: string) => !!value && value.trim().length > 0;
   const cleanText = (value?: string) => (value || '').trim();
 
@@ -81,7 +86,7 @@ export const exportToDOCX = async (resume: ResumeData): Promise<void> => {
   const softSkills = (resume.skills?.soft || []).filter(hasText);
   const languages = (resume.skills?.languages || []).filter(hasText);
 
-  const sections: Paragraph[] = [];
+  const sections: DocxParagraph[] = [];
 
   // Header
   sections.push(
